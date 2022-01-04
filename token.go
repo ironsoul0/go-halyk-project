@@ -11,6 +11,10 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+const (
+	ADMIN_ROLE = "admin"
+)
+
 type TokenPayload struct {
 	ID       int64  `json:"id"`
 	IIN      string `json:"iin"`
@@ -73,4 +77,12 @@ func extractToken(r *http.Request) (token string, err error) {
 
 	token = parsedHeader[1]
 	return
+}
+
+func getPayload(r *http.Request) (*TokenPayload, error) {
+	payload, ok := r.Context().Value("payload").(*TokenPayload)
+	if !ok {
+		return nil, fmt.Errorf("getPayload: unable to get payload from request")
+	}
+	return payload, nil
 }

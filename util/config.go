@@ -5,11 +5,12 @@ import (
 )
 
 type Config struct {
-	DBSource      string `mapstructure:"DB_SOURCE"`
-	AccessSecret  string `mapstructure:"ACCESS_SECRET"`
-	RefreshSecret string `mapstructure:"REFRESH_SECRET"`
-	RedisAddress  string `mapstructure:"REDIS_ADDRESS"`
-	Port          string `mapstructure:"PORT"`
+	DBSource            string `mapstructure:"DB_SOURCE"`
+	AccessSecret        string `mapstructure:"ACCESS_SECRET"`
+	RefreshSecret       string `mapstructure:"REFRESH_SECRET"`
+	RedisAddress        string `mapstructure:"REDIS_ADDRESS"`
+	Port                string `mapstructure:"PORT"`
+	TransactionsService string `mapstructure:"TRANSACTIONS_SERVICE"`
 }
 
 func LoadConfig(path string) (config Config, err error) {
