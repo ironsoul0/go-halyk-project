@@ -9,6 +9,7 @@ type Config struct {
 	AccessSecret  string `mapstructure:"ACCESS_SECRET"`
 	RefreshSecret string `mapstructure:"REFRESH_SECRET"`
 	RedisAddress  string `mapstructure:"REDIS_ADDRESS"`
+	Port          string `mapstructure:"PORT"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

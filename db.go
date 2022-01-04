@@ -22,6 +22,7 @@ type User struct {
 	ID       int64  `json:"id"`
 	Username string `json:"username"`
 	IIN      string `json:"IIN"`
+	Role     string `json:"role"`
 	Password string `json:"-"`
 }
 
@@ -50,10 +51,10 @@ func NewRepo(DSN string) (*Repo, error) {
 
 func (r *Repo) getUser(id int64) (*User, error) {
 	var query string
-	query = "SELECT id, username, password, iin FROM users WHERE id = $1"
+	query = "SELECT id, username, password, iin, role FROM users WHERE id = $1"
 	user := &User{}
 
-	err := r.db.QueryRow(context.Background(), query, id).Scan(&user.ID, &user.Username, &user.Password, &user.IIN)
+	err := r.db.QueryRow(context.Background(), query, id).Scan(&user.ID, &user.Username, &user.Password, &user.IIN, &user.Role)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, nil

@@ -3,8 +3,9 @@ CREATE TABLE "users" (
   "username" varchar NOT NULL UNIQUE,
   "password" varchar NOT NULL,
   "iin" varchar NOT NULL UNIQUE,
+  "role" varchar NOT NULL DEFAULT 'user',
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT now()::TIMESTAMPTZ
 );
 
-INSERT INTO "users" (username, password, iin) VALUES ('admin', 'admin', '0123');
-INSERT INTO "users" (username, password, iin) VALUES ('halyk', 'halyk', '4567');
+INSERT INTO "users" (username, password, iin, role) VALUES ('admin', 'admin', '0123', 'admin');
+INSERT INTO "users" (username, password, iin, role) VALUES ('halyk', 'halyk', '4567', 'user');

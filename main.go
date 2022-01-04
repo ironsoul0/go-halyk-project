@@ -63,14 +63,14 @@ func (s *Server) authorizatonCheckMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		id, err := s.parseToken(token, true)
+		tokenPayload, err := s.parseToken(token, true)
 		if err != nil {
 			log.Printf("Parse access token error: %v", err)
 			w.WriteHeader(http.StatusForbidden)
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "id", id)
+		ctx := context.WithValue(r.Context(), "id", tokenPayload.ID)
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})
@@ -103,7 +103,7 @@ func main() {
 		accessSecret:  config.AccessSecret,
 		refreshSecret: config.RefreshSecret,
 		redisConn:     client,
-		accessTtl:     5 * time.Minute,
+		accessTtl:     24 * time.Hour,
 		refreshTtl:    24 * time.Hour,
 	}
 
@@ -119,5 +119,5 @@ func main() {
 
 	appRouter.HandleFunc("/user/{id:[0-9]+}", server.getUser).Methods("GET")
 
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe(fmt.Sprintf(":%s", config.Port), r)
 }
