@@ -52,11 +52,7 @@ func (s *Server) fetchWallets(authHeader string) ([]*Wallet, error) {
 }
 
 func (s *Server) profile(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Auth header", r.Header.Get("Authorization"))
-	wallets, err := s.fetchWallets(r.Header.Get("Authorization"))
-
-	fmt.Println("wallets", wallets)
-	fmt.Println("err", err)
+	wallets, _ := s.fetchWallets(r.Header.Get("Authorization"))
 
 	payload, err := getPayload(r)
 	if err != nil {
@@ -68,14 +64,21 @@ func (s *Server) profile(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	buf, err := json.MarshalIndent(user, "", " ")
+	response := struct {
+		User
+		Wallets []*Wallet `json:"wallets"`
+	}{
+		User:    *user,
+		Wallets: wallets,
+	}
+	buf, err := json.MarshalIndent(response, "", " ")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, string(buf))
+	fmt.Fprint(w, string(buf))
 }
 
 func (s *Server) getUser(w http.ResponseWriter, r *http.Request) {
@@ -105,7 +108,7 @@ func (s *Server) getUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, string(buf))
+	fmt.Fprint(w, string(buf))
 }
 
 func (s *Server) authorizationCheckMiddleware(next http.Handler) http.Handler {
