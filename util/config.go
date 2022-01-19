@@ -11,6 +11,7 @@ type Config struct {
 	RedisAddress        string `mapstructure:"REDIS_ADDRESS"`
 	Port                string `mapstructure:"PORT"`
 	TransactionsService string `mapstructure:"TRANSACTIONS_SERVICE"`
+	Origin              string `mapstructure:"ORIGIN"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

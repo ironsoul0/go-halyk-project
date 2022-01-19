@@ -82,7 +82,7 @@ func (r *Repo) createUser(username string, password string, IIN string) (int64, 
 	var query string
 	var err error
 
-	query = "SELECT COUNT (*) FROM users WHERE username = $1 OR iin = $2"
+	query = "SELECT COUNT(*) FROM users WHERE username = $1 OR iin = $2"
 	var total int
 	err = r.db.QueryRow(context.Background(), query, username, IIN).Scan(&total)
 	if err != nil {

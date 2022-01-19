@@ -147,6 +147,21 @@ func (s *Server) adminCheckMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+func CORS(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		origin := r.Header.Get("Origin")
+		w.Header().Set("Access-Control-Allow-Origin", origin)
+		if r.Method == "OPTIONS" {
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, X-CSRF-Token, Authorization")
+			return
+		} else {
+			h.ServeHTTP(w, r)
+		}
+	})
+}
+
 func main() {
 	config, err := util.LoadConfig(".")
 	if err != nil {
@@ -194,5 +209,5 @@ func main() {
 	adminRouter.Use(server.authorizationCheckMiddleware, server.adminCheckMiddleware)
 	adminRouter.HandleFunc("/user/{id:[0-9]+}", server.getUser).Methods("GET")
 
-	http.ListenAndServe(fmt.Sprintf(":%s", config.Port), r)
+	http.ListenAndServe(fmt.Sprintf(":%s", config.Port), CORS(r))
 }
